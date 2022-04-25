@@ -157,7 +157,7 @@ public class MoviesGridFragment extends Fragment {
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         Movie movie = movies.get(position);
                         try {
-                            Intent intent = new Intent(getContext(), MovieActivity.class);
+                            Intent intent = new Intent(requireContext(), MovieActivity.class);
                             intent.putExtra("movieID", movie.getId());
                             startActivity(intent);
                         } catch (Exception e) {

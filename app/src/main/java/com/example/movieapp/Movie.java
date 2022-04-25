@@ -2,6 +2,9 @@ package com.example.movieapp;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +19,12 @@ public class Movie {
     private String thumbnail;
     private String screenings;
     private String runtime;
+    @SerializedName("movieComments")
     List<MovieComment> movieComments;
 
     public Movie(int id, String name, String description, String genre, int rating, int count,
                  double avgRating, String thumbnail, String screenings, String runtime,
-                 ArrayList<MovieComment> movieComments) {
+                 List<MovieComment> movieComments) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -121,7 +125,7 @@ public class Movie {
         return movieComments;
     }
 
-    public void setMovieComments(List<MovieComment> movieComments) {
+    public void setMovieComments(ArrayList<MovieComment> movieComments) {
         this.movieComments = movieComments;
     }
 

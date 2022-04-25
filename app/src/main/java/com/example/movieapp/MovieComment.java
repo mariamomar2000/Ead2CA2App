@@ -1,10 +1,13 @@
 package com.example.movieapp;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.time.Instant;
 
 public class MovieComment {
     private int id;
     private String comment;
+    @SerializedName("created")
     private Instant created;
     private int movieId;
     private Movie movie;
