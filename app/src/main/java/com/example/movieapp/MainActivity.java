@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity implements NavigationHost {
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity implements NavigationHost {
                     .commit();
         }
     }
+
+
 
     @Override
     public void navigateTo(Fragment fragment, boolean addToBackstack) {
