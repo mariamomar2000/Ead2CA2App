@@ -1,5 +1,7 @@
 package com.example.movieapp;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,14 +12,14 @@ public class Movie {
     private String genre;
     private int rating;
     private int count;
-    private int avgRating;
+    private double avgRating;
     private String thumbnail;
     private String screenings;
     private String runtime;
     List<MovieComment> movieComments;
 
     public Movie(int id, String name, String description, String genre, int rating, int count,
-                 int avgRating, String thumbnail, String screenings, String runtime,
+                 double avgRating, String thumbnail, String screenings, String runtime,
                  ArrayList<MovieComment> movieComments) {
         this.id = id;
         this.name = name;
@@ -80,11 +82,14 @@ public class Movie {
         this.count = count;
     }
 
-    public int getAvgRating() {
-        return avgRating;
+    public double getAvgRating() {
+
+        double val = (double) getRating() / getCount();
+        if (Double.isNaN(val)) { return 0.0; }
+        return Math.round(val * 100.0) / 100.0;
     }
 
-    public void setAvgRating(int avgRating) {
+    public void setAvgRating(double avgRating) {
         this.avgRating = avgRating;
     }
 
@@ -118,5 +123,11 @@ public class Movie {
 
     public void setMovieComments(List<MovieComment> movieComments) {
         this.movieComments = movieComments;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getName();
     }
 }

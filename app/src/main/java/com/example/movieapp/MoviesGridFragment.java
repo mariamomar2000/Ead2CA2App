@@ -3,16 +3,28 @@ package com.example.movieapp;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -31,6 +43,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +52,7 @@ public class MoviesGridFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ArrayList<Movie> movies;
+    private MovieListAdapter adapter;
     @Override
     public void onCreate(Bundle savedInstances) {
         super.onCreate(savedInstances);
@@ -53,6 +67,7 @@ public class MoviesGridFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.movie_grid_fragment, container, false);
     }
 
@@ -62,8 +77,35 @@ public class MoviesGridFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        requireActivity().getMenuInflater().inflate(R.menu.menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setVisibility(View.VISIBLE);
+        EditText txtSearch = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        txtSearch.setTextColor(Color.WHITE);
+        searchView.setQueryHint("Search for movie");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-    private void getMovies() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (recyclerView != null) {
+                    adapter.getFilter().filter(newText);
+                    return false;
+                }
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    public void getMovies() {
         RequestQueue queue = Volley.newRequestQueue(requireContext());
         String URL = "https://moviesapiserver.azurewebsites.net/api/Movie";
         Log.d("Request", "making request");
@@ -81,7 +123,14 @@ public class MoviesGridFragment extends Fragment {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.d("Error", error.toString());
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                                Button button = requireActivity().requireViewById(R.id.retry_btn);
+                                TextView textView = requireActivity().requireViewById(R.id.api_error);
+                                textView.setVisibility(View.VISIBLE);
+                                button.setVisibility(View.VISIBLE);
+                                textView.setText(requireContext().getString(R.string.something_went_wrong,
+                                        error.toString()));
+                            }
                         }
                     });
             queue.add(jsonArrayRequest);
@@ -92,11 +141,14 @@ public class MoviesGridFragment extends Fragment {
 
     private void buildRecyclerViewList(ArrayList<Movie> movies) {
         // initializing our adapter class.
-        MovieListAdapter adapter = new MovieListAdapter(movies, requireContext());
+        adapter = new MovieListAdapter(movies, requireContext());
         recyclerView = requireView().findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2,
                 GridLayoutManager.VERTICAL, false));
+        int largePadding = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing);
+        int smallPadding = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing_small);
+        recyclerView.addItemDecoration(new MovieGridItemDecoration(largePadding, smallPadding));
         recyclerView.setAdapter(adapter);
 
         ItemClickSupport.addTo(recyclerView)

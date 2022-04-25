@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MaterialCardView.Cut"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="2dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="0.8dp"
+    app:strokeColor="@color/dark_primary_trans"
     app:layout_constraintTop_toBottomOf="parent"
     android:layout_marginTop="10dp"
     app:cardPreventCornerOverlap="true">
@@ -13,11 +16,31 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/movie_image"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="230dp"
-            android:scaleType="fitXY"/>
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/movie_image"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/movie_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/movie_image"
+                android:padding="10dp"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/white"
+                android:background="@color/dark_primary_trans"
+                android:text="@string/movie_score"
+                android:textAppearance="?attr/textAppearanceBody2"
+                app:drawableEndCompat="@drawable/ic_baseline_star_24" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,17 +52,15 @@
                 android:id="@+id/movie_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceSubtitle2" />
+                android:text="@string/movie_title"
+                android:textAppearance="?attr/textAppearanceBody2" />
 
             <TextView
                 android:id="@+id/movie_genre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceBody2" />
+                android:text="@string/movie_category"
+                android:textAppearance="?attr/textAppearanceCaption" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
