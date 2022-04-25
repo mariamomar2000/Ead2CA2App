@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FilmApp</string>
+    <string name="add_a_comment">Ajouter un commentaire...</string>
+    <string name="movie_description">Description du film</string>
+    <string name="like">Aimer</string>
+    <string name="comment">COMMENTER</string>
+    <string name="comments">commentaires</string>
+    <string name="images">Images</string>
+    <string name="buttonImage">Image du bouton</string>
+    <string name="movie_title">Titre du film</string>
+</resources>
