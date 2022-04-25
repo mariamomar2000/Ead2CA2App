@@ -13,4 +13,25 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        //text color
+        <item name="android:editTextColor">@color/white</item>
+        //icon color
+        <item name="android:tint">@color/white</item>
+        //cursor color
+        <item name="colorAccent">@color/white</item>
+        //query search icon color
+        <item name="colorControlNormal">@color/white</item>
+        // Icon color
+        <item name ="icon">@color/white</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.MaterialCardView.Cut" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">6dp</item>
+        <item name="cornerSizeTopLeft">6dp</item>
+        <item name="cornerSizeBottomRight">6dp</item>
+        <item name="cornerSizeBottomLeft">6dp</item>
+    </style>
 </resources>
