@@ -1,36 +1,37 @@
 package com.example.movieapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-
 public class MovieDetailsFragment extends Fragment {
-    private ArrayList<Movie> movies;
-
+    private Movie movie;
     @Override
     public void onCreate(Bundle savedInstances) {
         super.onCreate(savedInstances);
+        Intent intent = requireActivity().getIntent();
+        Integer movieID = intent.getIntExtra("movieID", 0);
         try {
-            getMovies();
+            getMovie(movieID);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,25 +39,23 @@ public class MovieDetailsFragment extends Fragment {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.movie_activity, container, false);
+        return inflater.inflate(R.layout.movie_details_item, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
-    private void getMovies() {
+    private void getMovie(Integer movieID) {
         RequestQueue queue = Volley.newRequestQueue(requireContext());
-        String URL = "https://moviesapiserver.azurewebsites.net/api/Movie";
+        String URL = "https://moviesapiserver.azurewebsites.net/api/Movie/id/" + movieID.toString();
         Log.d("Request", "making request");
         try {
             StringRequest jsonArrayRequest = new StringRequest(Request.Method.GET,
                     URL,
                     response -> {
-                        Type movieListType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                        movies = new Gson().fromJson(response, movieListType);
-                        buildRecyclerViewList(movies);
+                        movie = new Gson().fromJson(response, Movie.class);
+                        buildView(movie);
                     },
                     error -> Log.d("Error", error.toString()));
             queue.add(jsonArrayRequest);
@@ -65,25 +64,20 @@ public class MovieDetailsFragment extends Fragment {
         }
     }
 
-    private void buildRecyclerViewList(ArrayList<Movie> movies) {
-        // initializing our adapter class.
-        MovieDetailsAdapter adapter = new MovieDetailsAdapter(movies, requireContext());
-        RecyclerView recyclerView = requireView().findViewById(R.id.recycler_view_details);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2,
-                GridLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(adapter);
-
-        ItemClickSupport.addTo(recyclerView)
-                .setOnItemClickListener((recyclerView1, position, v) -> {
-                    Movie movie = movies.get(position);
-                    try {
-                        Intent intent = new Intent(getContext(), MovieActivity.class);
-                        intent.putExtra("movieID", movie.getId());
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        Log.e("Intent error", e.getMessage());
-                    }
-                });
+    @SuppressLint("SetTextI18n")
+    private void buildView(Movie movie) {
+        TextView movieTitle = requireView().findViewById(R.id.movie_title);
+        TextView movieGenre = requireView().findViewById(R.id.movie_genre);
+        ImageView movieImage = requireView().findViewById(R.id.movie_image);
+        TextView movieRating = requireView().findViewById(R.id.movie_ratings);
+        TextView movieTime = requireView().findViewById(R.id.movie_duration);
+        TextView movieDescription = requireView().findViewById(R.id.movie_description);
+        TextView movieScreenings = requireView().findViewById(R.id.movie_screening);
+        movieTitle.setText(movie.getName());
+        movieGenre.setText(movie.getGenre());
+        Picasso.get().load(movie.getThumbnail()).into(movieImage);
+        movieRating.setText(Double.toString(movie.getAvgRating()));
+        movieTime.setText(movie.getRuntime());
+        movieDescription.setText(movie.getDescription());
     }
 }
